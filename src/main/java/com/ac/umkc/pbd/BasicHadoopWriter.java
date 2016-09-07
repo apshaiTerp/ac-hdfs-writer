@@ -1,7 +1,5 @@
 package com.ac.umkc.pbd;
 
-import java.io.File;
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -42,18 +40,6 @@ public class BasicHadoopWriter {
       return;
     }
     
-    //create our output files, purging previous ones if possible.
-    String parentFolder = args[0];
-    File rootFolder  = new File(parentFolder);
-    if (!rootFolder.exists()) {
-      System.err.println ("The provided folder path does not exist");
-      return;
-    }
-    if (!rootFolder.isDirectory()) {
-      System.err.println ("The provided folder path is not a directory");
-      return;
-    }
-    
     BasicHadoopWriter writer = new BasicHadoopWriter(args[0], args[1]);
     writer.execute();
   }
@@ -62,19 +48,13 @@ public class BasicHadoopWriter {
    * Helper method to drive the program execution.
    */
   public void execute() {
-    File rootFolder  = new File(osFilePath);
-    File messageFile = new File(rootFolder, "messageOutput.txt");
-    
     //Now we begin the HDFS process
     try {
       Configuration hdfsConfiguration = new Configuration();
       FileSystem hdfs                 = FileSystem.get(hdfsConfiguration);
       
-      //DEBUG
-      System.out.println("fs.defaultFS: " + hdfsConfiguration.get("fs.defaultFS"));
-      
-      Path localFile = new Path(messageFile.getAbsolutePath());
-      Path hdfsFile  = new Path(hdfsFilePath + "/messageOutput.txt");
+      Path localFile = new Path(osFilePath);
+      Path hdfsFile  = new Path(hdfsFilePath);
       
       //If the HDFS version of the file already exists, purge it first
       if (hdfs.exists(hdfsFile)) {
@@ -82,16 +62,6 @@ public class BasicHadoopWriter {
       }
       
       hdfs.copyFromLocalFile(false, true, localFile, hdfsFile);
-      
-      /***
-      FSDataInputStream in   = hdfs.open(localFile);
-      FSDataOutputStream out = hdfs.create(hdfsFile, true);
-
-      IOUtils.copyBytes(in, out, hdfsConfiguration);
-      **/
-      //try { in.close();  } catch (Throwable t) { /** Ignore Errors */ }
-      //try { out.close(); } catch (Throwable t) { /** Ignore Errors */ }
-      
     } catch (Throwable t) {
       System.err.println ("Something bad happened: " + t.getMessage());
       t.printStackTrace();
