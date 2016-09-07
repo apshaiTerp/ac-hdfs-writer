@@ -71,7 +71,7 @@ public class BasicHadoopWriter {
       FileSystem hdfs                 = FileSystem.get(hdfsConfiguration);
       
       //DEBUG
-      System.out.println("fs.default.name: " + hdfsConfiguration.get("fs.default.name"));
+      System.out.println("fs.defaultFS: " + hdfsConfiguration.get("fs.defaultFS"));
       
       Path localFile = new Path(messageFile.getAbsolutePath());
       Path hdfsFile  = new Path(hdfsFilePath + "/messageOutput.txt");
