@@ -14,7 +14,7 @@ import org.apache.hadoop.io.IOUtils;
  * from the local file system into HDFS, preparatory to a word count program being run.
  * 
  * Technologies used here are:
- * <ul>Apache Hadoop Core and HDFS libraries for HDFS File writes</li>
+ * <ul><li>Apache Hadoop Core and HDFS libraries for HDFS File writes</li>
  * <li>Maven is used as the build utility</li></ul>
  * 
  * This program expects two command line parameters, the first being the file path for the source OS
@@ -74,7 +74,16 @@ public class BasicHadoopWriter {
       FileSystem hdfs                 = FileSystem.get(hdfsConfiguration);
       
       Path localFile = new Path(messageFile.getAbsolutePath());
+      Path hdfsRoot  = new Path(hdfsFilePath);
       Path hdfsFile  = new Path(hdfsFilePath + "/messageOutput.txt");
+      
+      //Do something to check/create the folder path as needed
+      if (hdfs.exists(hdfsRoot))
+        System.out.println ("It exists already!");
+      else {
+        System.out.println ("It does not exist... Trying to create it.");
+        hdfs.mkdirs(hdfsRoot);
+      }
       
       //If the HDFS version of the file already exists, purge it first
       if (hdfs.exists(hdfsFile)) {
