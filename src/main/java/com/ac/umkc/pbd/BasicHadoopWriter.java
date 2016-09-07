@@ -3,11 +3,8 @@ package com.ac.umkc.pbd;
 import java.io.File;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FSDataInputStream;
-import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IOUtils;
 
 /**
  * The goal of this program is pull the curated content of tweets by the venerable Donald Trump (@realDonaldTrump),
@@ -74,29 +71,23 @@ public class BasicHadoopWriter {
       FileSystem hdfs                 = FileSystem.get(hdfsConfiguration);
       
       Path localFile = new Path(messageFile.getAbsolutePath());
-      Path hdfsRoot  = new Path(hdfsFilePath);
       Path hdfsFile  = new Path(hdfsFilePath + "/messageOutput.txt");
-      
-      //Do something to check/create the folder path as needed
-      if (hdfs.exists(hdfsRoot))
-        System.out.println ("It exists already!");
-      else {
-        System.out.println ("It does not exist... Trying to create it.");
-        hdfs.mkdirs(hdfsRoot);
-      }
       
       //If the HDFS version of the file already exists, purge it first
       if (hdfs.exists(hdfsFile)) {
         hdfs.delete(hdfsFile, false);
       }
       
+      hdfs.copyFromLocalFile(false, true, localFile, hdfsFile);
+      
+      /***
       FSDataInputStream in   = hdfs.open(localFile);
       FSDataOutputStream out = hdfs.create(hdfsFile, true);
 
       IOUtils.copyBytes(in, out, hdfsConfiguration);
-      
-      try { in.close();  } catch (Throwable t) { /** Ignore Errors */ }
-      try { out.close(); } catch (Throwable t) { /** Ignore Errors */ }
+      **/
+      //try { in.close();  } catch (Throwable t) { /** Ignore Errors */ }
+      //try { out.close(); } catch (Throwable t) { /** Ignore Errors */ }
       
     } catch (Throwable t) {
       System.err.println ("Something bad happened: " + t.getMessage());

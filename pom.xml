@@ -7,8 +7,8 @@
   <version>0.9</version>
   <packaging>jar</packaging>
 
-  <name>Principles of Big Data - Twitter Library Pull API</name>
-  <description>Java Libraries and Base Classes for Twitter Data Pull</description>
+  <name>Principles of Big Data - HDFS File Copy Utility</name>
+  <description>Java Libraries and Base Classes for HDFS File Writer</description>
   <inceptionYear>2016</inceptionYear>
   
   <developers>
